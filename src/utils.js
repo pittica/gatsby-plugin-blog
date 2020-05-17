@@ -57,8 +57,52 @@ function distinct(post, categories, key) {
   }
 }
 
+function match(a, b) {
+  let result = 0
+
+  a.forEach((left) => {
+    b.forEach((right) => {
+      if (left === right) {
+        result++
+      }
+    })
+  })
+
+  return result
+}
+
+function related(post, posts, limit) {
+  const related = []
+  let i = posts.data.allMarkdownRemark.edges.length;
+
+  while (i !== 0 && related.length < limit) {
+    let node = posts.data.allMarkdownRemark.edges[Math.floor(Math.random() * i)].node;
+
+    if (node.fields.slug !== post.node.fields.slug && match(node.fields.categories, post.node.fields.categories) > 0) {
+      let duplicate = false
+
+      related.forEach((r) => {
+        if (r.fields.slug === node.fields.slug) {
+          duplicate = true
+        }
+      })
+
+      if (duplicate) {
+        continue
+      }
+
+      related.push(node)
+    }
+
+    i -= 1;
+  }
+
+  return related
+}
+
 module.exports = {
   categorify: categorify,
   groupify: groupify,
-  distinct: distinct
+  distinct: distinct,
+  related: related
 }

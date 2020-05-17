@@ -48,11 +48,27 @@ exports.createPages = async ({ graphql, actions }, options) => {
     `
   )
 
-  posts.data.allMarkdownRemark.edges.forEach((post) => {
+  posts.data.allMarkdownRemark.edges.forEach((post, index) => {
+    if (options.templateArticle) {
+      const next = index === posts.data.allMarkdownRemark.edges.length - 1 ? null : posts.data.allMarkdownRemark.edges[index + 1].node
+      const previous = index === 0 ? null : posts.data.allMarkdownRemark.edges[index - 1].node
+
+      createPage({
+        path: post.node.fields.slug,
+        component: path.resolve(options.templateArticle),
+        context: {
+          slug: post.node.fields.slug,
+          previous,
+          next,
+          related: Utils.related(post, posts, options.relatedPerPage || 5)
+        }
+      })
+    }
+
     Utils.distinct(post, categories, "categories")
     Utils.distinct(post, tags, "tags")
   })
-  
+
   if (options.templateCategory) {
     Utils.groupify(categories, "category", path.resolve(options.templateCategory), postsPerPage, createPage)
   }

@@ -35,6 +35,9 @@ module.exports = {
         postsPerPage: 15,
         templateCategory: "./src/templates/category.js",
         templateTag: "./src/templates/tag.js",
+        templateArticle: "./src/templates/blog-post.js",
+        templateList: "./src/templates/blog-list.js",
+        slug: "blog",
         regex: "/^\/(blog)\//s",
       }
     },
@@ -61,9 +64,21 @@ Sets the path of the template used by categories.
 
 Sets the path of the template used by tags.
 
+#### templateArticle
+
+Sets the path of the template used by blog posts.
+
+#### templateList
+
+Sets the path of the template used by blog root.
+
 #### regex
 
-Sets the regex used to filter the slug of the posts.
+Sets the regular expression used to filter the slug of the posts. If not setted, the plugin uses the _slug_ parameter.
+
+#### slug
+
+Sets the slug of the posts.
 
 ## Copyright
 

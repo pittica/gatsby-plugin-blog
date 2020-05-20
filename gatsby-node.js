@@ -10,12 +10,12 @@ exports.createPages = async ({ graphql, actions }, options) => {
 
   let filter = ``
 
-  if (options.regex) {
+  if (options.regex || options.slug) {
     filter = `
       filter: {
         fields: {
           slug: {
-            regex: "` + options.regex + `"
+            regex: "` + (options.regex ? options.regex : "/^\/(" + options.slug + ")\//s") + `"
           }
         }
       }
@@ -70,6 +70,24 @@ exports.createPages = async ({ graphql, actions }, options) => {
       Utils.distinct(post, categories, "categories")
       Utils.distinct(post, tags, "tags")
     })
+
+    if (options.templateList && options.slug) {
+      const numPages = Math.ceil(posts.data.allMarkdownRemark.edges.length / postsPerPage)
+
+      Array.from({ length: numPages }).forEach((_, i) => {
+        createPage({
+          path: i === 0 ? `/${options.slug}` : `/${options.slug}/${i + 1}`,
+          component: path.resolve(options.templateList),
+          context: {
+            limit: postsPerPage,
+            skip: i * postsPerPage,
+            pages: numPages,
+            current: i + 1,
+            slug: options.slug
+          }
+        })
+      })
+    }
 
     if (options.templateCategory) {
       Utils.groupify(categories, "category", path.resolve(options.templateCategory), postsPerPage, createPage)

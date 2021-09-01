@@ -82,4 +82,4 @@ Sets the slug of the posts.
 
 ## Copyright
 
-(c) 2020, Pittaca S.r.l.s.
+(c) 2020, [Pittica S.r.l.s.](https://pittica.com).
